@@ -2,7 +2,7 @@
     "load_string": "test string",
     "load_int": 100,
     "struct": {
-        "load_string": "test string",
-        "load_int": 100
+        "load_string": "test string 2",
+        "load_int": 200
     }
 }

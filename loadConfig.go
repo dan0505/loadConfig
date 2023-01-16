@@ -16,11 +16,14 @@ func LoadConfig(c interface{}, v *viper.Viper) {
 
 }
 
-func setValue(container reflect.Value, v *viper.Viper, tag string) {
+func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 	for j := 0; j < container.NumField(); j++ {
 		fieldType := container.Type().Field(j)
 		fieldName := fieldType.Name
 		tag := string(fieldType.Tag.Get("cfg"))
+		if lastTag != "" {
+			tag = fmt.Sprintf("%s.%s", lastTag, tag)
+		}
 		if tag == "" {
 			panic(fmt.Sprintf("tag not set for %s", fieldName))
 		}

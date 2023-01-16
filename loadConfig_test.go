@@ -87,7 +87,7 @@ func TestLoadConfig(t *testing.T) {
 		}
 		var testStruct structStruct
 		loadConfig.LoadConfig(&testStruct, v)
-		assert.Equal(t, testStruct.TestStruct.TestString, "test string")
-		assert.Equal(t, testStruct.TestStruct.TestInt, 100)
+		assert.Equal(t, "test string 2", testStruct.TestStruct.TestString)
+		assert.Equal(t, 200, testStruct.TestStruct.TestInt)
 	})
 }
