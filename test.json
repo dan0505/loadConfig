@@ -1,0 +1,8 @@
+{
+    "load_string": "test string",
+    "load_int": 100,
+    "struct": {
+        "load_string": "test string",
+        "load_int": 100
+    }
+}
