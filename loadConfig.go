@@ -7,12 +7,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-func LoadConfig(c interface{}, v *viper.Viper) {
+func LoadConfigWithEnvEntry(c interface{}, v *viper.Viper, entryName string) {
 	if err := IsPtrToStruct(c); err != nil {
 		panic(err)
 	}
 	container := reflect.ValueOf(c).Elem()
-	setValue(container, v, "")
+	setValue(container, v, entryName)
+}
+
+func LoadConfig(c interface{}, v *viper.Viper) {
+	LoadConfigWithEnvEntry(c, v, "")
 
 }
 

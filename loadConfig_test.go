@@ -91,3 +91,24 @@ func TestLoadConfig(t *testing.T) {
 		assert.Equal(t, 200, testStruct.TestStruct.TestInt)
 	})
 }
+
+func TestLoadConfigWithEnvEntry(t *testing.T) {
+	v := viper.New()
+	v.AddConfigPath(".")
+
+	v.SetConfigName("test")
+	v.SetConfigType("json")
+	if err := v.ReadInConfig(); err != nil {
+		panic(fmt.Errorf("Error while reading config file %s", err))
+	}
+
+	t.Run("load with entry name", func(t *testing.T) {
+		type structStruct struct {
+			TestString string `cfg:"load_string"`
+			TestInt    int    `cfg:"load_int"`
+		}
+		var testStruct structStruct
+		loadConfig.LoadConfigWithEnvEntry(&testStruct, v, "struct")
+		assert.EqualValues(t, structStruct{"test string 2", 200}, testStruct)
+	})
+}
