@@ -26,9 +26,6 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 		fieldName := fieldType.Name
 
 		f := container.Field(j)
-		if !f.IsValid() || !f.CanSet() {
-			panic(fmt.Sprintf("can't set field %s", fieldName))
-		}
 
 		newTag := string(fieldType.Tag.Get("cfg"))
 		if newTag == "" && f.Type().Kind() != reflect.Struct {
@@ -37,6 +34,10 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 		}
 		if newTag == "-" {
 			continue
+		}
+
+		if !f.IsValid() || !f.CanSet() {
+			panic(fmt.Sprintf("can't set field %s", fieldName))
 		}
 
 		tag := combineTage(lastTag, newTag)
