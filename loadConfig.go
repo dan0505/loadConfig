@@ -8,7 +8,7 @@ import (
 )
 
 func LoadConfigWithEnvEntry(c interface{}, v *viper.Viper, entryName string) {
-	if err := IsPtrToStruct(c); err != nil {
+	if err := isPtrToStruct(c); err != nil {
 		panic(err)
 	}
 	container := reflect.ValueOf(c).Elem()
@@ -24,21 +24,22 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 	for j := 0; j < container.NumField(); j++ {
 		fieldType := container.Type().Field(j)
 		fieldName := fieldType.Name
-		tag := string(fieldType.Tag.Get("cfg"))
-		if lastTag != "" {
-			tag = fmt.Sprintf("%s.%s", lastTag, tag)
+
+		f := container.Field(j)
+		if !f.IsValid() || !f.CanSet() {
+			panic(fmt.Sprintf("can't set field %s", fieldName))
 		}
-		if tag == "" {
+
+		tag := string(fieldType.Tag.Get("cfg"))
+		if tag == "" && f.Type().Kind() != reflect.Struct {
+			// tage shouldn't be empty unless it's struct
 			panic(fmt.Sprintf("tag not set for %s", fieldName))
 		}
 		if tag == "-" {
 			continue
 		}
 
-		f := container.Field(j)
-		if !f.IsValid() || !f.CanSet() {
-			panic(fmt.Sprintf("can't set field %s", fieldName))
-		}
+		tag = combineTage(lastTag, tag)
 
 		noValue := func() {
 			panic(fmt.Sprintf("can't get config for %s", tag))
