@@ -58,7 +58,9 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 			}
 			f.SetInt(int64(v.GetInt(tag)))
 		case reflect.Struct:
-			setValue(f, v, tag)
+			if tag != "-" {
+				setValue(f, v, tag)
+			}
 		default:
 			panic(fmt.Sprintf("can't handle %s", f.Type().String()))
 		}
