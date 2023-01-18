@@ -90,6 +90,18 @@ func TestLoadConfig(t *testing.T) {
 		assert.Equal(t, "test string 2", testStruct.TestStruct.TestString)
 		assert.Equal(t, 200, testStruct.TestStruct.TestInt)
 	})
+
+	t.Run("should ignore - struct", func(t *testing.T) {
+		type RandomInterface interface{}
+		type RandomStruct struct{}
+		type structStruct struct {
+			RandomPtr     *RandomInterface `cfg:"-"`
+			AnotherPtr    *structStruct    `cfg:"-"`
+			AnotherStruct RandomStruct     `cfg:"-"`
+		}
+		var testStruct structStruct
+		loadConfig.LoadConfig(&testStruct, v)
+	})
 }
 
 func TestLoadConfigWithEnvEntry(t *testing.T) {
