@@ -30,16 +30,16 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 			panic(fmt.Sprintf("can't set field %s", fieldName))
 		}
 
-		tag := string(fieldType.Tag.Get("cfg"))
-		if tag == "" && f.Type().Kind() != reflect.Struct {
+		newTag := string(fieldType.Tag.Get("cfg"))
+		if newTag == "" && f.Type().Kind() != reflect.Struct {
 			// tage shouldn't be empty unless it's struct
 			panic(fmt.Sprintf("tag not set for %s", fieldName))
 		}
-		if tag == "-" {
+		if newTag == "-" {
 			continue
 		}
 
-		tag = combineTage(lastTag, tag)
+		tag := combineTage(lastTag, newTag)
 
 		noValue := func() {
 			panic(fmt.Sprintf("can't get config for %s", tag))
@@ -58,7 +58,7 @@ func setValue(container reflect.Value, v *viper.Viper, lastTag string) {
 			}
 			f.SetInt(int64(v.GetInt(tag)))
 		case reflect.Struct:
-			if tag != "-" {
+			if newTag != "-" {
 				setValue(f, v, tag)
 			}
 		default:
